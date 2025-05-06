@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuneQuest NPC Combat Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 5px; background-color: black; color: white; text-align: center; }
+        h2 { text-align: center; }
+        .tracker-container { 
+            display: grid; 
+            grid-template-columns: repeat(4, min-content); 
+            gap: 3px; 
+            justify-content: center; 
+        }
+        .tracker { 
+            width: auto; 
+            padding: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            background-color: #222; 
+            text-align: center; 
+            margin: 0px; 
+        }
+        table { width: auto; border-collapse: collapse; font-size: 11px; }
+        th, td { padding: 2px; text-align: center; border-bottom: 1px solid #555; }
+        th { background-color: #444; }
+        input { width: 30px; padding: 2px; text-align: center; background-color: #333; color: white; border: 1px solid #555; }
+        .npc-name { width: 75%; padding: 3px; background-color: #333; color: white; border: 1px solid #555; text-align: center; margin-bottom: 3px; }
+        .status { width: 100%; padding: 2px; background-color: #444; color: white; border: 1px solid #555; text-align: center; margin-top: 3px; }
+    </style>
+</head>
+<body>
+    <h2>RuneQuest NPC Combat Tracker</h2>
+    <div class="tracker-container">
+        <script>
+            function generateNPC(id) {
+                return `
+                <div class="tracker">
+                    <input type="text" class="npc-name" placeholder="NPC Name" id="npcName${id}">
+                    <label for="totalHP${id}"><strong>Total HP:</strong></label>
+                    <input type="number" id="totalHP${id}" value="10" onchange="calculateHitLocations(${id})">
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Location</th>
+                                <th>Roll</th>
+                                <th>Total HP</th>
+                                <th>Current HP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Right Leg</td>
+                                <td>1-4</td>
+                                <td><input type="text" id="rightLegTotal${id}" readonly></td>
+                                <td><input type="number" id="rightLegCurrent${id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Left Leg</td>
+                                <td>5-8</td>
+                                <td><input type="text" id="leftLegTotal${id}" readonly></td>
+                                <td><input type="number" id="leftLegCurrent${id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Abdomen</td>
+                                <td>9-11</td>
+                                <td><input type="text" id="abdomenTotal${id}" readonly></td>
+                                <td><input type="number" id="abdomenCurrent${id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Chest</td>
+                                <td>12</td>
+                                <td><input type="text" id="chestTotal${id}" readonly></td>
+                                <td><input type="number" id="chestCurrent${id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Right Arm</td>
+                                <td>13-15</td>
+                                <td><input type="text" id="rightArmTotal${id}" readonly></td>
+                                <td><input type="number" id="rightArmCurrent${id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Left Arm</td>
+                                <td>16-18</td>
+                                <td><input type="text" id="leftArmTotal${id}" readonly></td>
+                                <td><input type="number" id="leftArmCurrent${id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Head</td>
+                                <td>19-20</td>
+                                <td><input type="text" id="headTotal${id}" readonly></td>
+                                <td><input type="number" id="headCurrent${id}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="text" class="status" placeholder="Status (e.g., Injured, Severed)" id="status${id}">
+                </div>`;
+            }
+
+            for (let i = 1; i <= 16; i++) {
+                document.write(generateNPC(i));
+            }
+
+            function calculateHitLocations(id) {
+                let totalHP = parseInt(document.getElementById(`totalHP${id}`).value);
+
+                function lookupHP(value) {
+                    if (value >= 1 && value <= 6) return [2, 3, 2, 1, 1, 2, 2];
+                    else if (value >= 7 && value <= 9) return [3, 4, 3, 2, 2, 3, 3];
+                    else if (value >= 10 && value <= 12) return [4, 5, 4, 3, 3, 4, 4];
+                    else if (value >= 13 && value <= 15) return [5, 6, 5, 4, 4, 5, 5];
+                    else if (value >= 16 && value <= 18) return [6, 7, 6, 5, 5, 6, 6];
+                    else if (value >= 19 && value <= 21) return [7, 8, 7, 6, 6, 7, 7];
+                    else return [7, 8, 7, 6, 6, 7, 7]; // Default beyond 21
+                }
+
+                let [rightLeg, leftLeg, abdomen, chest, rightArm, leftArm, head] = lookupHP(totalHP);
+
+                document.getElementById(`rightLegTotal${id}`).value = rightLeg;
+                document.getElementById(`leftLegTotal${id}`).value = leftLeg;
+                document.getElementById(`abdomenTotal${id}`).value = abdomen;
+                document.getElementById(`chestTotal${id}`).value = chest;
+                document.getElementById(`rightArmTotal${id}`).value = rightArm;
+                document.getElementById(`leftArmTotal${id}`).value = leftArm;
+                document.getElementById(`headTotal${id}`).value = head;
+            }
+
+            window.onload = function () {
+                for (let i = 1; i <= 16; i++) {
+                    calculateHitLocations(i);
+                }
+            };
+        </script>
+    </div>
+</body>
+</html>
