@@ -10,7 +10,7 @@
         .tracker-container { 
             display: grid; 
             grid-template-columns: repeat(4, min-content); 
-            gap: 3px; 
+            gap: 5px; 
             justify-content: center; 
         }
         .tracker { 
@@ -99,7 +99,7 @@
                 </div>`;
             }
 
-            for (let i = 1; i <= 16; i++) {
+            for (let i = 1; i <= 8; i++) {
                 document.write(generateNPC(i));
             }
 
@@ -128,7 +128,7 @@
             }
 
             window.onload = function () {
-                for (let i = 1; i <= 16; i++) {
+                for (let i = 1; i <= 8; i++) {
                     calculateHitLocations(i);
                 }
             };
