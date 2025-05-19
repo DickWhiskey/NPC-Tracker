@@ -1,321 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RuneQuest NPC Combat Tracker</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 5px;
-    background-color: black;
-    color: white;
-    text-align: center;
-  }
-  h2 {
-    margin-bottom: 15px;
-  }
-  #trackerContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
-    justify-content: center;
-    max-width: 1200px;
-    margin: 0 auto 15px auto;
-  }
-  .tracker {
-    background-color: #222;
-    border-radius: 8px;
-    padding: 10px;
-    border: 1px solid #555;
-    text-align: center;
-    position: relative;
-  }
-  .npc-name {
-    width: 80%;
-    padding: 5px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    background-color: #333;
-    border: 1px solid #555;
-    color: white;
-    font-weight: bold;
-  }
-  label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: bold;
-  }
-  input[type="number"] {
-    width: 50px;
-    padding: 4px;
-    background-color: #333;
-    border: 1px solid #555;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-  }
-  input[readonly] {
-    background-color: #222;
-    border: none;
-    font-weight: bold;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    margin-top: 10px;
-  }
-  th,
-  td {
-    padding: 6px 8px;
-    border-bottom: 1px solid #444;
-    text-align: center;
-  }
-  th {
-    background-color: #444;
-  }
-  .status {
-    width: 90%;
-    padding: 6px;
-    margin-top: 8px;
-    border-radius: 6px;
-    background-color: #444;
-    border: 1px solid #555;
-    color: white;
-  }
-  button.reset-hp, button.remove-npc {
-    margin-top: 8px;
-    padding: 6px 10px;
-    background-color: #555;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  button.reset-hp:hover, button.remove-npc:hover {
-    background-color: #777;
-  }
-  button.remove-npc {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background-color: #a33;
-  }
-  button.remove-npc:hover {
-    background-color: #d44;
-  }
-  #addNpcBtn {
-    padding: 10px 20px;
-    background-color: #339966;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  #addNpcBtn:hover {
-    background-color: #44bb77;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RuneQuest NPC Generator & Combat Tracker</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: #1e1e1e;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 1em;
+      color: #00bfff;
+    }
+    button {
+      margin: 10px 0 20px;
+      padding: 0.75em;
+      font-size: 1em;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      width: 100%;
+      max-width: 200px;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    input[type=number], input[type=text] {
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 0.5em;
+      font-size: 1em;
+      text-align: center;
+      margin-bottom: 10px;
+      width: 100%;
+      max-width: 150px;
+    }
+    .npc-block {
+      background-color: #111;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    .npc-block h2 {
+      margin-top: 0;
+      color: #00bfff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 6px;
+      border: 1px solid #333;
+      font-size: 13px;
+    }
+    th {
+      background-color: #222;
+    }
+    td input[type=number], td input[type=text] {
+      width: 60px;
+      margin: 0 auto;
+      display: block;
+    }
+    .section-title {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #cccccc;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.25em;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    label.cr-label {
+      font-weight: bold;
+      color: #ccc;
+      display: block;
+      margin-bottom: 5px;
+      max-width: 150px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
 <body>
-  <h2>RuneQuest NPC Combat Tracker</h2>
-  <div id="trackerContainer"></div>
-  <button id="addNpcBtn">Add NPC</button>
+  <div class="container">
+    <h1>RuneQuest NPC Generator & Combat Tracker</h1>
+    <button onclick="addNPC()">Add New NPC</button>
+    <div id="npcContainer"></div>
+  </div>
 
-<script>
-  const trackerContainer = document.getElementById("trackerContainer");
-  const addNpcBtn = document.getElementById("addNpcBtn");
-  let npcCount = 0;
+  <script>
+    let npcCount = 0;
 
-  function lookupHP(value) {
-    if (value >= 1 && value <= 6) return [2, 3, 2, 1, 1, 2, 2];
-    else if (value >= 7 && value <= 9) return [3, 4, 3, 2, 2, 3, 3];
-    else if (value >= 10 && value <= 12) return [4, 5, 4, 3, 3, 4, 4];
-    else if (value >= 13 && value <= 15) return [5, 6, 5, 4, 4, 5, 5];
-    else if (value >= 16 && value <= 18) return [6, 7, 6, 5, 5, 6, 6];
-    else if (value >= 19 && value <= 21) return [7, 8, 7, 6, 6, 7, 7];
-    else return [7, 8, 7, 6, 6, 7, 7];
-  }
+    function addNPC() {
+      npcCount++;
+      const id = npcCount;
+      const container = document.getElementById('npcContainer');
 
-  function createTracker(id) {
-    npcCount++;
-    const div = document.createElement("div");
-    div.className = "tracker";
-    div.id = `tracker${id}`;
+      const npcHTML = `
+        <div class="npc-block" id="npc${id}">
+          <h2>NPC #${id}</h2>
+          <label class="cr-label" for="cr${id}">Character Rating (CR 0–10):</label>
+          <input type="number" id="cr${id}" min="0" max="10" value="4" onchange="generateNPCStats(${id})" />
+          
+          <div id="npcStats${id}"></div>
 
-    // Remove NPC button
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "remove-npc";
-    removeBtn.textContent = "✖";
-    removeBtn.title = "Remove this NPC";
-    removeBtn.onclick = () => {
-      trackerContainer.removeChild(div);
-    };
-    div.appendChild(removeBtn);
+          <label for="totalHP${id}" class="cr-label">Total Hit Points:</label>
+          <input type="number" id="totalHP${id}" min="1" value="12" onchange="updateHitLocations(${id})" />
 
-    // NPC Name
-    const nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.className = "npc-name";
-    nameInput.placeholder = "NPC Name";
-    div.appendChild(nameInput);
+          <table>
+            <thead>
+              <tr><th>Location</th><th>Roll</th><th>Total HP</th><th>Current HP</th></tr>
+            </thead>
+            <tbody>
+              ${createLocationRow(id, 'Right Leg', '1-4')}
+              ${createLocationRow(id, 'Left Leg', '5-8')}
+              ${createLocationRow(id, 'Abdomen', '9-11')}
+              ${createLocationRow(id, 'Chest', '12')}
+              ${createLocationRow(id, 'Right Arm', '13-15')}
+              ${createLocationRow(id, 'Left Arm', '16-18')}
+              ${createLocationRow(id, 'Head', '19-20')}
+            </tbody>
+          </table>
+          <input type="text" class="status" placeholder="Status (e.g., Injured, Bleeding)" id="status${id}" style="margin-top:12px; width: 100%; max-width: 300px;" />
+        </div>
+      `;
 
-    // Total HP
-    const totalHpLabel = document.createElement("label");
-    totalHpLabel.htmlFor = `totalHP${id}`;
-    totalHpLabel.textContent = "Total HP:";
-    div.appendChild(totalHpLabel);
+      container.insertAdjacentHTML('beforeend', npcHTML);
 
-    const totalHpInput = document.createElement("input");
-    totalHpInput.type = "number";
-    totalHpInput.id = `totalHP${id}`;
-    totalHpInput.value = 10;
-    totalHpInput.min = 1;
-    div.appendChild(totalHpInput);
-
-    // Table of hit locations
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>Location</th>
-          <th>Roll</th>
-          <th>Total HP</th>
-          <th>Current HP</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Right Leg</td><td>1-4</td><td><input type="text" id="rightLegTotal${id}" readonly></td><td><input type="number" id="rightLegCurrent${id}" min="0"></td></tr>
-        <tr><td>Left Leg</td><td>5-8</td><td><input type="text" id="leftLegTotal${id}" readonly></td><td><input type="number" id="leftLegCurrent${id}" min="0"></td></tr>
-        <tr><td>Abdomen</td><td>9-11</td><td><input type="text" id="abdomenTotal${id}" readonly></td><td><input type="number" id="abdomenCurrent${id}" min="0"></td></tr>
-        <tr><td>Chest</td><td>12</td><td><input type="text" id="chestTotal${id}" readonly></td><td><input type="number" id="chestCurrent${id}" min="0"></td></tr>
-        <tr><td>Right Arm</td><td>13-15</td><td><input type="text" id="rightArmTotal${id}" readonly></td><td><input type="number" id="rightArmCurrent${id}" min="0"></td></tr>
-        <tr><td>Left Arm</td><td>16-18</td><td><input type="text" id="leftArmTotal${id}" readonly></td><td><input type="number" id="leftArmCurrent${id}" min="0"></td></tr>
-        <tr><td>Head</td><td>19-20</td><td><input type="text" id="headTotal${id}" readonly></td><td><input type="number" id="headCurrent${id}" min="0"></td></tr>
-      </tbody>
-    `;
-    div.appendChild(table);
-
-    // Status input
-    const statusInput = document.createElement("input");
-    statusInput.type = "text";
-    statusInput.className = "status";
-    statusInput.placeholder = "Status (e.g., Injured, Severed)";
-    div.appendChild(statusInput);
-
-    // Reset HP button
-    const resetButton = document.createElement("button");
-    resetButton.className = "reset-hp";
-    resetButton.textContent = "Reset Current HP";
-    resetButton.onclick = () => resetHP(id);
-    div.appendChild(resetButton);
-
-    trackerContainer.appendChild(div);
-
-    // Event listeners
-    totalHpInput.addEventListener("input", () => {
-      calculateHitLocations(id);
-    });
-
-    const currentIds = [
-      `rightLegCurrent${id}`, `leftLegCurrent${id}`, `abdomenCurrent${id}`, 
-      `chestCurrent${id}`, `rightArmCurrent${id}`, `leftArmCurrent${id}`, `headCurrent${id}`
-    ];
-    currentIds.forEach((cid) => {
-      const input = document.getElementById(cid);
-      input.addEventListener("input", () => clampCurrentHP(id));
-    });
-
-    calculateHitLocations(id);
-  }
-
-  function calculateHitLocations(id) {
-    const totalHPInput = document.getElementById(`totalHP${id}`);
-    let totalHP = parseInt(totalHPInput.value);
-    if (isNaN(totalHP) || totalHP < 1) {
-      totalHP = 10;
-      totalHPInput.value = totalHP;
+      generateNPCStats(id);
     }
-    const [rightLeg, leftLeg, abdomen, chest, rightArm, leftArm, head] = lookupHP(totalHP);
 
-    const parts = [
-      ["rightLegTotal", rightLeg],
-      ["leftLegTotal", leftLeg],
-      ["abdomenTotal", abdomen],
-      ["chestTotal", chest],
-      ["rightArmTotal", rightArm],
-      ["leftArmTotal", leftArm],
-      ["headTotal", head],
-    ];
+    function createLocationRow(id, label, roll) {
+      const part = label.replace(/\s+/g, '');
+      return `
+        <tr>
+          <td>${label}</td>
+          <td>${roll}</td>
+          <td><input type="text" id="${part}Total${id}" readonly></td>
+          <td><input type="number" id="${part}Current${id}" step="1" min="0"></td>
+        </tr>
+      `;
+    }
 
-    parts.forEach(([idPrefix, hp]) => {
-      const totalInput = document.getElementById(idPrefix + id);
-      const currentInput = document.getElementById(idPrefix.replace("Total", "Current") + id);
+    function generateNPCStats(id) {
+      const crInput = document.getElementById(`cr${id}`);
+      let cr = parseInt(crInput.value);
+      if (isNaN(cr) || cr < 0) cr = 0;
+      if (cr > 10) cr = 10;
+      crInput.value = cr;
 
-      if (totalInput && currentInput) {
-        totalInput.value = hp;
-        if (!currentInput.value || currentInput.value > hp) currentInput.value = hp;
-        currentInput.max = hp;
+      const characteristic = 10 + cr;
+      const totalHP = characteristic;
+      const baseSkill = 20 + (cr * 10);
+      const perLocHP = Math.ceil(totalHP / 3);
+      const hpChest = perLocHP + 1;
+      const hpArms = perLocHP - 1;
+      const hpOther = perLocHP;
+      const strikeRank = 5 - Math.floor((cr - 1) / 2);
+      const damageBonus = cr <= 5 ? "1D4" : "1D6";
+      const magicPoints = cr;
+
+      const statsDiv = document.getElementById(`npcStats${id}`);
+      statsDiv.innerHTML = `
+        <div class="section-title">Characteristics & Combat</div>
+        <p><strong>Characteristic Scores:</strong> ${characteristic} (all stats)</p>
+        <p><strong>Base Skill:</strong> ~${baseSkill}%</p>
+        <p><strong>Strike Rank:</strong> ${strikeRank}</p>
+        <p><strong>Damage Bonus:</strong> +${damageBonus}</p>
+        <p><strong>Magic Points:</strong> ${magicPoints}</p>
+        <div class="section-title">Hit Points by Location</div>
+        <p>Legs: ${hpOther} HP</p>
+        <p>Abdomen: ${hpOther} HP</p>
+        <p>Chest: ${hpChest} HP</p>
+        <p>Arms: ${hpArms} HP</p>
+        <p>Head: ${hpOther} HP</p>
+      `;
+
+      // Update total HP input and hit locations
+      document.getElementById(`totalHP${id}`).value = totalHP;
+      updateHitLocations(id, hpChest, hpArms, hpOther);
+    }
+
+    function updateHitLocations(id, hpChest=null, hpArms=null, hpOther=null) {
+      // If hp values not passed, calculate from totalHP
+      if (hpChest === null || hpArms === null || hpOther === null) {
+        const totalHP = parseInt(document.getElementById(`totalHP${id}`).value);
+        const perLocHP = Math.ceil(totalHP / 3);
+        hpChest = perLocHP + 1;
+        hpArms = perLocHP - 1;
+        hpOther = perLocHP;
       }
-    });
-  }
 
-  function clampCurrentHP(id) {
-    const parts = [
-      "rightLegCurrent",
-      "leftLegCurrent",
-      "abdomenCurrent",
-      "chestCurrent",
-      "rightArmCurrent",
-      "leftArmCurrent",
-      "headCurrent",
-    ];
+      // Set totals for each location
+      document.getElementById(`RightLegTotal${id}`).value = hpOther;
+      document.getElementById(`LeftLegTotal${id}`).value = hpOther;
+      document.getElementById(`AbdomenTotal${id}`).value = hpOther;
+      document.getElementById(`ChestTotal${id}`).value = hpChest;
+      document.getElementById(`RightArmTotal${id}`).value = hpArms;
+      document.getElementById(`LeftArmTotal${id}`).value = hpArms;
+      document.getElementById(`HeadTotal${id}`).value = hpOther;
 
-    parts.forEach((cid) => {
-      const input = document.getElementById(cid + id);
-      const totalId = cid.replace("Current", "Total");
-      const totalInput = document.getElementById(totalId + id);
+      // Initialize current HP if empty or greater than total
+      ['RightLeg', 'LeftLeg', 'Abdomen', 'Chest', 'RightArm', 'LeftArm', 'Head'].forEach(loc => {
+        const currentInput = document.getElementById(`${loc}Current${id}`);
+        const totalInput = document.getElementById(`${loc}Total${id}`);
+        if (!currentInput.value || parseInt(currentInput.value) > parseInt(totalInput.value)) {
+          currentInput.value = totalInput.value;
+        }
+        // Make sure current HP can't be set above total
+        currentInput.max = totalInput.value;
+      });
+    }
 
-      if (input && totalInput) {
-        let val = parseInt(input.value);
-        let maxVal = parseInt(totalInput.value);
-        if (isNaN(val) || val < 0) val = 0;
-        if (val > maxVal) val = maxVal;
-        input.value = val;
-      }
-    });
-  }
-
-  function resetHP(id) {
-    const parts = [
-      "rightLegCurrent",
-      "leftLegCurrent",
-      "abdomenCurrent",
-      "chestCurrent",
-      "rightArmCurrent",
-      "leftArmCurrent",
-      "headCurrent",
-    ];
-    parts.forEach((cid) => {
-      const currentInput = document.getElementById(cid + id);
-      const totalInput = document.getElementById(cid.replace("Current", "Total") + id);
-      if (currentInput && totalInput) {
-        currentInput.value = totalInput.value;
-      }
-    });
-  }
-
-  // Start with one NPC tracker
-  createTracker(1);
-
-  // Add NPC button click handler
-  addNpcBtn.addEventListener("click", () => {
-    npcCount++;
-    createTracker(npcCount);
-  });
-</script>
+    // Add initial NPC on load
+    addNPC();
+  </script>
 </body>
 </html>
